@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/sudoku.css' %}">
+    <script src="{% static 'js/script.js' %}"></script>
+    <title>Sudoku of the Day</title>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+        <a class="navbar-brand" href="/">
+            <h3><i class="fas fa-chess pr-2"></i>SUDOKU</h3>
+        </a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse mr-5" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto h5">
+                <li class="nav-item">
+                    <a class="nav-link" href="/how_to_play">How to Play</a>
+                </li>
+            </ul>
+        </div>  
+    </nav>
+
+    <!-- MAIN -->
+    <div class="container mt-4">
+        <!-- DIFFICULTY -->
+        <div class="row text-secondary font-weight-bold mt-5 mb-2 pl-2">
+            <span class="pl-4">DIFFICULTY:</span>
+            <span id="difficulty" value="easy" class="badge badge-pill badge-light text-secondary p-2 ml-2">EASY</span>
+            <span id="difficulty" value="medium" class="badge badge-pill badge-light text-secondary p-2 ml-2">MEDIUM</span>
+            <span id="difficulty" value="hard" class="badge badge-pill badge-light text-secondary p-2 ml-2">HARD</span>
+            <span id='notes-button' class="badge badge-pill badge-light text-secondary p-2 ml-2"><i class="far fa-edit"></i>NOTES</span>
+        </div>
+        <div class="row mx-auto">
+
+            <!-- SUDOKU BOARD -->
+            <div class="col">
+                <div id="board"></div>
+            </div>
+
+            <!-- INPUT BUTTONS -->
+            <div class="col mb-5">
+                <div id="input-box" class="mx-auto">
+                    <div class="row">
+                        <div class="timer col d-flex justify-content-center">
+                            <h4 id="display" class="text-center pt-3 pb-2 px-1">00:00:00</h4>
+                            <h4 id="startStop" onclick="startStop()" class="text-center pt-3 pb-2 px-1">
+                                <i class="far fa-pause-circle"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button class="col btn btn-info rounded-0 pt-3" onclick="newGame()">
+                            <div class="h4">New Game</div>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="one" type="submit" value=1 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                            <div class="h4">1</div>
+                        </button>
+                        <button id="two" type="submit" value=2 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                            <div class="h4">2</div>
+                        </button>
+                        <button id="three" type="submit" value=3 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
+                            <div class="h4">3</div>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="four" type="submit" value=4 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                            <div class="h4">4</div>
+                        </button>
+                        <button id="five" type="submit" value=5 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                            <div class="h4">5</div>
+                        </button>
+                        <button id="six" type="submit" value=6 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
+                            <div class="h4">6</div>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="seven" type="submit" value=7 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                            <div class="h4">7</div>
+                        </button>
+                        <button id="eight" type="submit" value=8 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                            <div class="h4">8</div>
+                        </button>
+                        <button id="nine" type="submit" value=9 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
+                            <div class="h4">9</div>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="clear" type="reset" class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                            <div class="h3"><i class="fas fa-trash-alt"></i></div>
+                            <div>CLEAR</div>
+                        </button>
+                        <button id="erase" type="submit" value=0 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
+                            <div class="h3"><i class="fas fa-eraser"></i></div>
+                            <div>ERASE</div>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="validate" type="submit" class="btn btn-outline-secondary col rounded-0 border-right-0">
+                            <div class="h3"><i class="fas fa-check"></i></div>
+                            <div>VALIDATE</div>
+                        </button>
+                        <button id="solution" type="submit" class="btn btn-outline-secondary col rounded-0">
+                            <div class="h3"><i class="far fa-lightbulb"></i></div>
+                            <div>SOLVE</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col my-5">
+                <!-- NUMBER API -->
+                <div class="card mt-3">
+                    <div class="card-body px-4 py-5">
+                        <h4 class="card-title text-info mb-4">Fun Facts about Numbers</h4>
+                        <h5 id='fact' class="card-subtitle text-secondary">
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="csrf" value="{{csrf_token}}">
+    </div>
+</body>
+</html>

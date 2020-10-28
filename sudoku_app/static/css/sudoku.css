@@ -1,0 +1,76 @@
+#difficulty:hover, #notes-button:hover {
+    background-color: #d2f2fc;
+}
+
+input { 
+    border: solid thin #bababa; 
+    text-align: center; 
+    font-size: 25px;
+}
+input {
+    height: 55px;
+}
+input:focus {
+    background-color: #d5d5d5;
+    color: transparent;
+    outline: none;
+}
+input:disabled:hover {
+    background-color: #d2f2fc;
+}
+
+#board {
+    width: 29rem;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    padding: 0px 15px;
+    border: solid medium #343a40; 
+}
+
+#input-box {
+    width: 13rem;
+    margin-bottom: 20px;  
+    margin: 0 auto;
+}
+
+button {
+    height: 70px;
+}
+#erase, #clear, #validate, #solution {
+    height: 80px;
+    padding: 5px 0;
+    font-weight: 400;
+}
+
+.timer button {
+    height: auto;
+    text-align: center;
+    padding: 0 5px;
+    vertical-align: middle;
+    width: 60px;
+}
+.timer {
+    line-height: 55px;
+    text-align: center;
+}
+
+li {
+    list-style-type:none;
+}
+
+#note-grid {
+    border: solid thin #bababa; 
+    text-align: center; 
+    font-size: 12px;
+    height: 55px;
+}
+
+#note-grid span:hover {
+    background-color: #d2f2fc;
+    /* outline: none; */
+}
+
+#note-grid div {
+    margin: 0;
+    padding: 0;
+}

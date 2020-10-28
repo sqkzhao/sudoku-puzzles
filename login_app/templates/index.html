@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Sudoku</title>
+</head>
+<body>
+    <div class="container">
+        <div class="mt-5">
+            <a class="btn btn-danger float-right mt-2" href="/sign_in/play_as_guest">Play as Guest</a>
+            <h1>Welcome! Let's play Sudoku.</h1>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+            <li class="text-danger small">{{ message }}</li>
+            {% endfor %}
+        {% endif %}
+    <!--------------------------------Register--------------------------->
+        <div class="row">
+            <div class="col form-group mt-3">
+                <h2>Registration</h2>
+                
+                <form action="/sign_in/register" method="POST">
+                    {% csrf_token %}
+                    <label>First Name</label>
+                        <input class="col form-control" type="text" name ="first_name">
+
+                    <label>Last Name</label>
+                        <input class="col form-control" type="text" name ="last_name">
+
+                    <label>Email</label>
+                        <input class="col form-control" type="text" name ="email">
+
+                    <label>Password</label>
+                        <input class="col form-control" type="password" name ="password">
+                    
+                    <label>Confirm PW</label>
+                        <input class="col form-control" type="password" name ="pass_conf">
+
+                    <input class="btn btn-info mt-2" type="submit" value="Register">
+                </form>
+
+
+            </div> <!--------------------End of register-------------------------------->
+
+
+    <!-----------------------------------Login--------------------------------->
+            <div class="col mt-3">
+                <h2>Login</h2>
+                
+                <form action="/sign_in/login" method="POST">
+                    {% csrf_token %}
+                    <label>Email</label>
+                        <input class="col form-control" type="text" name ="email_input">
+
+                    <label>Password</label>
+                        <input class="col form-control" type="password" name ="password_input">
+
+                    <input class="btn btn-info mt-2" type="submit" value="Login">
+                </form>
+            </div> <!---------------------End of Login col------------------------------------->
+
+        </div> <!-------------------------End of Row--------------------------------------->
+
+    </div> <!-------------------------End of container----------------------------------------->
+</body>
+</html>
