@@ -1,23 +1,14 @@
 var board = []; //can be updated
 var original_board = [];
 var solved_sudoku = [];
-var notes = {};
-var note_cell = {
-    '1': false,
-    '2': false,
-    '3': false,
-    '4': false,
-    '5': false,
-    '6': false,
-    '7': false,
-    '8': false,
-    '9': false,
-}
+var notes = [];
+var pencil_on = false;
 var difficulty = "easy";
 var fact_num = "random";
 var fact = "";
 var steps = 0;
 var highlight_value;
+
 
 
 function newGame(){
@@ -28,88 +19,66 @@ function generateBoard(difficulty){
     // get board from api; generate board
     $.get("https://sugoku.herokuapp.com/board?difficulty="+difficulty, function(data){
         board = data['board'];
-        var output = renderBoard(board);
+        var output = renderBoard();
         document.getElementById('board').innerHTML = output;
         renderFact(fact_num);
         startStop();
-        // solver();
     });
 }
 
-function renderBoard(board){
-    var output = '';
-    var initialRender = true;
+function renderBoard(){
+    let output = '';
+    let initialRender = true;
     if(original_board.length != 0){
         // do not create copy of original & solved_board
         initialRender = false;
     }
     for(var row = 0; row < board.length; row++){
+        let temp = [];
+        let tempArr = [];
+        let noteArr = [];
         if(row == 2 || row == 5){
-            output += "<div class='row border-bottom border-dark'>";
+            output += "<tr class='border-bottom'>";
         } else{
-            output += "<div class='row'>";
+            output += "<tr>";
         }
-        var temp = [];
-        var tempArr = [];
-        for( var col = 0; col < board[row].length; col++){
+        for(var col = 0; col < board[row].length; col++){
             // empty
             if(board[row][col] == 0){
                 if(col == 2 || col == 5) {
-                    output+=`<li value=${row}${col} id='number-grid' class='col border-right border-dark m-0 p-0'>
-                                <input type='text' maxlength='0' id=${row}${col} class='col'>
-                            </li>`;
-                    // output+=`<div class='col border-right border-dark m-0 p-0'>
-                    //             <div id='note-grid'>
-                    //                 <div class='row m-0 p-0'>
-                    //                     <span id='note-grid-cell' class='col m-0 p-0'>1</span>
-                    //                     <span id='note-grid-cell' class='col m-0 p-0'>2</span>
-                    //                     <span id='note-grid-cell' class='col m-0 p-0'>3</span>
-                    //                 </div>
-                    //                 <div class='row m-0 p-0'>
-
-                    //                     <span id='note-grid-cell' class='col m-0 p-0'>4</span>
-                    //                     <span id='note-grid-cell' class='col m-0 p-0'>5</span>
-                    //                     <span id='note-grid-cell' class='col m-0 p-0'>6</span>
-                    //                 </div>
-                    //                 <div class='row m-0 p-0'>
-                    //                     <span id='note-grid-cell' class='col m-0 p-0'>7</span>
-                    //                     <span id='note-grid-cell' class='col m-0 p-0'>8</span>
-                    //                     <span id='note-grid-cell' class='col m-0 p-0'>9</span>
-                    //                 </div>
-                    //             </div>
-                    //         </div>`;
+                    output+=`<td>
+                                <div id=${row}${col} class='number-box empty-box border-right border-dark'></div>
+                            </td>`;
                 } else {
-                    output+=`<li value=${row}${col} class='col m-0 p-0'>
-                                <input type='text' maxlength='0' id=${row}${col} class='col'>
-                            </li>`;
-                }
-                if(initialRender){
-                    notes[`${row}${col}`] = note_cell;
+                    output+=`<td>
+                                <div id=${row}${col} class='number-box empty-box'></div>
+                            </td>`;
                 }
             }
-            // disabled
+            // has value
             else{
                 if(col == 2 || col == 5) {
-                    output+=`<li value=${row}${col} class='col border-right border-dark m-0 p-0'>
-                                    <input type='text' maxlength='1' id=${row}${col} value=${board[row][col]} disabled class='bg-muted text-info col'>
-                                </li>`;
+                    output+=`<td>
+                                <div id=${row}${col} class='number-box border-right border-dark text-info'>${board[row][col]}</div>
+                            </td>`;
                 } else{
-                    output+=`<li value=${row}${col} class='col m-0 p-0'>
-                                <input type='text' maxlength='1' id=${row}${col} value=${board[row][col]} disabled class='bg-muted text-info col'>
-                            </li>`;
+                    output+=`<td>
+                                <div id=${row}${col} class='number-box text-info'>${board[row][col]}</div>
+                            </td>`;
                 }
             }
             // create copy of original board;
             temp.push(board[row][col]);
             tempArr.push(board[row][col]);
+            noteArr.push([]);
         }
-        output += "</div>";
+        output += "</tr>";
         if(initialRender){
             original_board.push(temp);
             solved_sudoku.push(tempArr);
+            notes.push(noteArr);
         }
     }
-    // console.log(notes);
     return output;
 }
 
@@ -121,11 +90,109 @@ function renderFact(number){
     })
 }
 
+function generateNoteOutput(row, col) {
+    let notelist = notes[row][col];
+    let note_output = `<div class='row m-0 p-0'>`;
+    for(var i = 1; i < 4; i++) {
+        if(notelist.includes(i.toString())){
+            note_output += `<span class='note-box-cell col m-0 p-0'>${i}</span>`;
+        } else {
+            note_output += `<span class='note-box-cell col m-0 p-0'>&nbsp;</span>`;
+        }
+    }
+    note_output += `</div><div class='row m-0 p-0'>`;
+    for(var i = 4; i < 7; i++) {
+        if(notelist.includes(i.toString())){
+            note_output += `<span class='note-box-cell col m-0 p-0'>${i}</span>`;
+        } else {
+            note_output += `<span class='note-box-cell col m-0 p-0'>&nbsp;</span>`;
+        }
+    }
+    note_output += `</div><div class='row m-0 p-0'>`;
+    for(var i = 7; i < 10; i++) {
+        if(notelist.includes(i.toString())){
+            note_output += `<span class='note-box-cell col m-0 p-0'>${i}</span>`;
+        } else {
+            note_output += `<span class='note-box-cell col m-0 p-0'>&nbsp;</span>`;
+        }
+    }
+    note_output += `</div>`;
+    return note_output;
+}
+
+function reRenderBoard(sudoku_board){
+    let output = '';
+    for(var row = 0; row < sudoku_board.length; row++){
+        if(row == 2 || row == 5){
+            output += "<tr class='border-bottom'>";
+        } else{
+            output += "<tr>";
+        }
+        for(var col = 0; col < sudoku_board[row].length; col++){
+            // set value
+            if(sudoku_board[row][col] == 0) {
+                value = "";
+            } else { 
+                value = sudoku_board[row][col];
+            }
+            // empty
+            if(original_board[row][col] == 0){
+                if(notes[row][col].length > 0){
+                    // render note-box
+                    let note_output = generateNoteOutput(row, col);
+                    if(col == 2 || col == 5) {
+                        output+=`<td>
+                                    <div id=${row}${col} class='note-box empty-box border-right border-dark'>
+                                        ${note_output}
+                                    </div>
+                                </td>`;
+                    } else {
+                        output+=`<td>
+                                    <div id=${row}${col} class='note-box empty-box'>
+                                        ${note_output}
+                                    </div>
+                                </td>`
+                    }
+                } else {
+                    // render number-box
+                    if(col == 2 || col == 5) {
+                        output+=`<td>
+                                    <div id=${row}${col} class='number-box empty-box border-right border-dark'>
+                                        ${value}
+                                    </div>
+                                </td>`;
+                    } else {
+                        output+=`<td>
+                                    <div id=${row}${col} class='number-box empty-box'>
+                                        ${value}
+                                    </div>
+                                </td>`;
+                    }
+                }
+            }
+            // original board number
+            else{
+                if(col == 2 || col == 5) {
+                    output+=`<td>
+                                <div id=${row}${col} class='number-box border-right border-dark text-info'>${sudoku_board[row][col]}</div>
+                            </td>`;
+                } else{
+                    output+=`<td>
+                                <div id=${row}${col} class='number-box text-info'>${sudoku_board[row][col]}</div>
+                            </td>`;
+                }
+            }
+        }
+        output += "</tr>";
+    }
+    document.getElementById('board').innerHTML = output;
+}
+
 
 
 // SOLVER FUNCTIONS
 function checkRows(){
-    var correct = true;
+    let correct = true;
     for(var row = 0; row < 9; row++){
         var arr = [];
         for(var col = 0; col < 9; col ++){
@@ -143,7 +210,7 @@ function checkRows(){
 }
 
 function checkCols(){
-    var correct = true;
+    let correct = true;
     for(var col = 0; col < 9; col++){
         var arr = [];
         for(var row = 0; row < 9; row++){
@@ -161,8 +228,8 @@ function checkCols(){
 }
 
 function checkBox(r,c){
-    var correct = true;
-    var arr = [];
+    let correct = true;
+    let arr = [];
     for(var row = r; row < (r+3); row++){
         for(var col = r; col < (r+3); col++){
             if(solved_sudoku[row][col] != 0){
@@ -225,17 +292,17 @@ function inputNumber(row, col, number){
 }
 
 function solver(){
-    var position = [0,0];
+    let position = [0,0];
 
-    var checkEmpty = isEmpty(position);
+    let checkEmpty = isEmpty(position);
     if(checkEmpty === false){
         return true;
     }
-    var row = position[0];
-    var col = position[1];
+    let row = position[0];
+    let col = position[1];
     
     for(var number=1; number < 10; number++){
-        var isValid = inputNumber(row, col, number);
+        let isValid = inputNumber(row, col, number);
         if(isValid){
             solved_sudoku[row][col] = number;
             if(solver()){
@@ -247,52 +314,13 @@ function solver(){
     return false;
 }
 
-function renderSolution(){
-    var output = '';
-    for(var row = 0; row < solved_sudoku.length; row++){
-        if(row == 2 || row == 5){
-            output += "<div class='row border-bottom border-dark'>";
-        } else{
-            output += "<div class='row'>";
-        }
-        for( var col = 0; col < solved_sudoku[row].length; col++){
-            // empty
-            if(original_board[row][col] == 0){
-                if(col == 2 || col == 5) {
-                    output+=`<li value=${row}${col} class='col border-right border-dark m-0 p-0'>
-                                <input type='text' maxlength='0' id=${row}${col} value=${solved_sudoku[row][col]} class='col'>
-                            </li>`;
-                } else {
-                    output+=`<li value=${row}${col} class='col m-0 p-0'>
-                                <input type='text' maxlength='0' id=${row}${col} value=${solved_sudoku[row][col]} class='col'>
-                            </li>`;
-                }
-            }
-            // disabled
-            else{
-                if(col == 2 || col == 5) {
-                    output+=`<li value=${row}${col} class='col border-right border-dark m-0 p-0'>
-                                <input type='text' maxlength='1' id=${row}${col} value=${solved_sudoku[row][col]} disabled class='bg-muted text-info col'>
-                            </li>`;
-                } else{
-                    output+=`<li value=${row}${col} class='col m-0 p-0'>
-                                <input type='text' maxlength='1' id=${row}${col} value=${solved_sudoku[row][col]} disabled class='bg-muted text-info col'>
-                            </li>`;
-                }
-            }
-        }
-        output += "</div>";
-    }
-    document.getElementById('board').innerHTML = output;
-}
-
 function validateInput(original_board, board, solved_sudoku){
     for(var row = 0; row < 9; row++){
         for(var col = 0; col < 9; col++){
             if(original_board[row][col] == 0 && board[row][col] != 0){
                 // check board with solved_sudoku
                 if(board[row][col] != solved_sudoku[row][col]){
-                    var id = `${row}${col}`;
+                    let id = `${row}${col}`;
                     $(`#${id}`).css("color", "red");
                 }
             }
@@ -300,59 +328,71 @@ function validateInput(original_board, board, solved_sudoku){
     }
 }
 
+// hightlight all the same numbers
 function highlight(value){
     if(value != 0){
         for(var row = 0; row < 9; row++){
             for(var col = 0; col < 9; col++){
                 if(board[row][col] == value){
                     $(`#${row}${col}`).css("background-color", "#d2f2fc");
-                }else{
+                }else {
                     $(`#${row}${col}`).css("background-color", "white");
                 }
             }
         }
-    }
+    } 
 }
 
 
 
 // BUTTONS & INPUTS
-// NUMBER CELLS - get the selected input id
+// NUMBER CELLS 
+// get id & change effects of the number-box
 var cell_id, set_value;
-$(document).on('focus', 'input', function(){
+$(document).on('click', '.empty-box', function(){
     cell_id = this.id;
-    $(`#${cell_id}`).css("color", "black");
+    // $(`#${cell_id}`).css("color", "black");
+    highlight(null);
+    $(`#${cell_id}`).css("background-color", "#d2f2fc");
     renderFact(parseInt(cell_id));
 });
 
-$(document).on('click', 'li', function(){
-    var input_id = $(this).val().toString();
-    if(input_id.length === 1){
-        input_id = '0' + input_id;
+// NUMBER-BOX
+$(document).on('click', '.number-box', function(){
+    let box_id = this.id;
+    if(box_id.length === 1){
+        box_id = '0' + box_id;
     }
-    var value = board[input_id[0]][input_id[1]];
+    let value = board[box_id[0]][box_id[1]];
     highlight_value = value;
     highlight(highlight_value);
-    // cell_id = undefined;
 })
-
 // NUMBER BUTTONS - get the clicked button value, and set it as the input value
 $(document).on('click', 'button:not(#validate, #clear, #solution)', function(){
     set_value = $(this).val();
-    var cell = document.getElementById(cell_id)
-    if(set_value == 0){ // 0
-        $(cell).val(null);
+    if(!pencil_on){
+        if(cell_id){
+            board[cell_id[0]][cell_id[1]] = parseInt(set_value);
+            if(notes[cell_id[0]][cell_id[1]]){
+                notes[cell_id[0]][cell_id[1]] = [];
+            }
+        }
+        reRenderBoard(board);
+        highlight_value = set_value;
+        highlight(highlight_value);
+    } else{
+        if(cell_id){
+            if(!notes[cell_id[0]][cell_id[1]]){
+                notes[cell_id[0]][cell_id[1]] = [];
+            } 
+            if(!notes[cell_id[0]][cell_id[1]].includes(set_value)){
+                notes[cell_id[0]][cell_id[1]].push(set_value);
+            }
+        }
+        reRenderBoard(board);
     }
-    else{   // 1-9
-        $(cell).val(set_value);
-    }
-    if(cell_id){
-        board[cell_id[0]][cell_id[1]] = parseInt(set_value);
-    }
-    highlight_value = set_value;
-    highlight(highlight_value);
     renderFact(set_value);
-    cell_id = undefined;
+    // cell_id = null;
 });
 // VALIDATE
 $(document).on('click', '#validate', function(){
@@ -363,18 +403,18 @@ $(document).on('click', '#clear', function(){
     if(this.id == 'clear'){
         for(var row = 0; row < 9; row++){
             for(var col = 0; col < 9; col++){
-                var new_val = original_board[row][col];
+                let new_val = original_board[row][col];
                 board[row][col] = new_val;
             }
         }
-        var temp_output = renderBoard(original_board);
+        let temp_output = renderBoard(original_board);
         document.getElementById('board').innerHTML = temp_output;
     }
 });
 // SOLUTION
 $(document).on('click', '#solution', function(){
     if(this.id == 'solution'){
-        renderSolution();
+        reRenderBoard(solved_sudoku);
         validateInput(original_board, board, solved_sudoku);
         for(var row = 0; row < 9; row++){
             for(var col = 0; col < 9; col++){
@@ -390,30 +430,36 @@ $(document).on('click', '#solution', function(){
 });
 // DIFFICULTY
 $(document).on('click', '#difficulty', function(){
-    var difficulty = $(this).attr("value");
+    let difficulty = $(this).attr("value");
     location.reload();
     generateBoard(difficulty);
     difficulty="easy";
 });
-// DELETE KEYDOWN
-document.addEventListener("keydown", e => {
-    var input_id;
-    if(e.keyCode == 8){
-        input_id = e.target.id;
-        console.log(board[input_id[0]][input_id[1]])
-        board[input_id[0]][input_id[1]] = 0;
-        console.log(input_id,input_id[0], board[input_id[0]][input_id[1]] )
-        highlight(highlight_value);
+// NOTE-BUTTON
+$(document).on('click', '#note-button', function(){
+    if(pencil_on){
+        // change pencil status
+        document.getElementById('pencil-status').innerHTML = `<i class="far fa-times-circle"></i>`;
+    } else {
+        document.getElementById('pencil-status').innerHTML = `<i class="far fa-check-circle"></i>`;
     }
-});
-// NOTES-BUTTON
-$(document).on('click', '#notes-button', function(){
-    // renderBoard
+    pencil_on = !pencil_on;
 })
 
 $(document).ready(function(){
     generateBoard(difficulty);
 });
+// DELETE KEYDOWN
+// document.addEventListener("keydown", e => {
+//     var input_id;
+//     if(e.keyCode == 8){
+//         input_id = e.target.id;
+//         console.log(board[input_id[0]][input_id[1]])
+//         board[input_id[0]][input_id[1]] = 0;
+//         console.log(input_id,input_id[0], board[input_id[0]][input_id[1]] )
+//         highlight(highlight_value);
+//     }
+// });
 
 
 

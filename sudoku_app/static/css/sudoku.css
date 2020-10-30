@@ -1,61 +1,64 @@
-#difficulty:hover, #notes-button:hover {
-    background-color: #d2f2fc;
-}
-
-input { 
-    border: solid thin #bababa; 
-    text-align: center; 
-    font-size: 25px;
-}
-input {
-    height: 55px;
-}
-input:focus {
-    background-color: #d5d5d5;
-    color: transparent;
-    outline: none;
-}
-input:disabled:hover {
+#difficulty:hover, #note-button:hover {
     background-color: #d2f2fc;
 }
 
 #board {
     width: 29rem;
+    height: 29rem;
     margin: 0 auto;
     margin-bottom: 20px;
     padding: 0px 15px;
     border: solid medium #343a40; 
 }
 
-#input-box {
+tr.border-bottom td {
+    border-bottom: solid 1px black;
+}
+td { 
+    border: solid thin #bababa; 
+    text-align: center; 
+    font-size: 25px;
+    height: 50.67px;
+    width: 50.67px;
+    padding: 0;
+}
+td:focus {
+    background-color: #d5d5d5;
+    color: transparent;
+    outline: none;
+}
+td:hover {
+    background-color: #d2f2fc;
+}
+.number-box {
+    height: 100%;
+    width: 100%;
+    padding-top: 4px;
+}
+.note-box {
+    height: 100%;
+    width: 100%;
+    font-size: 45.9%;
+}
+.note-box-cell {
+    color: rgb(121, 121, 121);
+    height: 35%;
+    display: inline-block;
+}
+
+#controller {
     width: 13rem;
     margin-bottom: 20px;  
     margin: 0 auto;
 }
-
 button {
+    width: 70px;
     height: 70px;
 }
 #erase, #clear, #validate, #solution {
-    height: 80px;
+    height: 91px;
     padding: 5px 0;
     font-weight: 400;
-}
-
-.timer button {
-    height: auto;
-    text-align: center;
-    padding: 0 5px;
-    vertical-align: middle;
-    width: 60px;
-}
-.timer {
-    line-height: 55px;
-    text-align: center;
-}
-
-li {
-    list-style-type:none;
 }
 
 #note-grid {
@@ -64,13 +67,65 @@ li {
     font-size: 12px;
     height: 55px;
 }
-
 #note-grid span:hover {
     background-color: #d2f2fc;
     /* outline: none; */
 }
-
 #note-grid div {
     margin: 0;
     padding: 0;
 }
+#phone-number-buttons {
+    display: none;
+}
+
+
+@media only screen and (max-width: 414px) {
+    #board {
+        width: 92vw;
+        height: 92vw;
+    }
+
+    td {
+        width: 9.2vw;
+        height: 9.2vw;
+        font-size: 22px;
+    }
+    .note-box-cell {
+        width: 3vw;
+        height: 3vw;
+    }
+
+    #controller {
+        width: 92vw;
+    }
+
+    button {
+        width: 11vw;
+        height: 11vw;
+        font-weight: bolder;
+        margin-bottom: 2px;
+    }
+    #erase, #clear, #validate, #solution {
+        width: 11vw;
+        height: 11vw;
+        font-weight: bolder;
+    }
+    #newgame {
+        width: 80vw;
+        text-align: center;
+    }
+    #newgame button {
+        width: 35%;
+        height: 28%;
+    }
+
+    #web-number-buttons {
+        display: none;
+    }
+    #phone-number-buttons {
+        display: contents;
+    }
+}
+
+

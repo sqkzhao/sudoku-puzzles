@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="Free online sudoku puzzle game">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -20,6 +21,11 @@
         <a class="navbar-brand" href="/">
             <h3><i class="fas fa-chess pr-2"></i>SUDOKU</h3>
         </a>
+        <h5 id="startStop" onclick="startStop()" class="text-light pt-1 pr-1">
+            <i class="far fa-pause-circle"></i>
+        </h5>
+        <h5 id="display" class="text-light pt-1">00:00:00</h5>
+            
         <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -35,95 +41,144 @@
     <!-- MAIN -->
     <div class="container mt-4">
         <!-- DIFFICULTY -->
-        <div class="row text-secondary font-weight-bold mt-5 mb-2 pl-2">
-            <span class="pl-4">DIFFICULTY:</span>
-            <span id="difficulty" value="easy" class="badge badge-pill badge-light text-secondary p-2 ml-2">EASY</span>
-            <span id="difficulty" value="medium" class="badge badge-pill badge-light text-secondary p-2 ml-2">MEDIUM</span>
-            <span id="difficulty" value="hard" class="badge badge-pill badge-light text-secondary p-2 ml-2">HARD</span>
-            <span id='notes-button' class="badge badge-pill badge-light text-secondary p-2 ml-2"><i class="far fa-edit"></i>NOTES</span>
+        <div class="row text-secondary font-weight-bold mt-3 mb-2">
+            <div class="col">
+                <span class="ml-1">DIFFICULTY:</span>
+                <span id="difficulty" value="easy" class="badge badge-pill badge-light text-secondary p-2 ml-1">EASY</span>
+                <span id="difficulty" value="medium" class="badge badge-pill badge-light text-secondary p-2 ml-1">MEDIUM</span>
+                <span id="difficulty" value="hard" class="badge badge-pill badge-light text-secondary p-2 ml-1">HARD</span>
+                <span id='note-button' class="badge badge-pill badge-light text-secondary p-2 ml-1">
+                    <i class="far fa-edit"></i>
+                    <span class="pr-1">NOTES</span>
+                    <span id="pencil-status">
+                        <i class="far fa-times-circle"></i>
+                    </span>
+                </span>
+            </div>
         </div>
         <div class="row mx-auto">
 
             <!-- SUDOKU BOARD -->
-            <div class="col">
-                <div id="board"></div>
-            </div>
+            <table id="board" class="mx-1"></table>
 
             <!-- INPUT BUTTONS -->
-            <div class="col mb-5">
-                <div id="input-box" class="mx-auto">
-                    <div class="row">
-                        <div class="timer col d-flex justify-content-center">
-                            <h4 id="display" class="text-center pt-3 pb-2 px-1">00:00:00</h4>
-                            <h4 id="startStop" onclick="startStop()" class="text-center pt-3 pb-2 px-1">
-                                <i class="far fa-pause-circle"></i>
-                            </h4>
+            <div id="controller-container" class="col mb-5 mx-1">
+                <div id="controller">
+                    <span id="web-number-buttons">
+                        <div class="row">
+                            <button class="col btn btn-info rounded-0 pt-3" onclick="newGame()">
+                                <div class="h4">New Game</div>
+                            </button>
                         </div>
-                    </div>
-                    <div class="row">
-                        <button class="col btn btn-info rounded-0 pt-3" onclick="newGame()">
-                            <div class="h4">New Game</div>
+                        <div class="row">
+                            <button id="one" type="submit" value=1 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                                <span class="h4">1</span>
+                            </button>
+                            <button id="two" type="submit" value=2 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                                <span class="h4">2</span>
+                            </button>
+                            <button id="three" type="submit" value=3 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
+                                <span class="h4">3</span>
+                            </button>
+                        </div>
+                        <div class="row">
+                            <button id="four" type="submit" value=4 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                                <span class="h4">4</span>
+                            </button>
+                            <button id="five" type="submit" value=5 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                                <span class="h4">5</span>
+                            </button>
+                            <button id="six" type="submit" value=6 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
+                                <span class="h4">6</span>
+                            </button>
+                        </div>
+                        <div class="row">
+                            <button id="seven" type="submit" value=7 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                                <span class="h4">7</span>
+                            </button>
+                            <button id="eight" type="submit" value=8 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                                <span class="h4">8</span>
+                            </button>
+                            <button id="nine" type="submit" value=9 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
+                                <span class="h4">9</span>
+                            </button>
+                        </div>
+                        <div class="row">
+                            <button id="clear" type="reset" class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
+                                <div class="h3"><i class="fas fa-trash-alt"></i></div>
+                                <div>CLEAR</div>
+                            </button>
+                            <button id="erase" type="submit" value=0 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
+                                <div class="h3"><i class="fas fa-eraser"></i></div>
+                                <div>ERASE</div>
+                            </button>
+                        </div>
+                        <div class="row">
+                            <button id="validate" type="submit" class="btn btn-outline-secondary col rounded-0 border-right-0">
+                                <div class="h3"><i class="fas fa-check"></i></div>
+                                <div>VALIDATE</div>
+                            </button>
+                            <button id="solution" type="submit" class="btn btn-outline-secondary col rounded-0">
+                                <div class="h3"><i class="far fa-lightbulb"></i></div>
+                                <div>SOLVE</div>
+                            </button>
+                        </div>
+                    </span>
+                    <span id="phone-number-buttons">
+                        <button id="one" type="submit" value=1 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">1</span>
                         </button>
-                    </div>
-                    <div class="row">
-                        <button id="one" type="submit" value=1 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
-                            <div class="h4">1</div>
+                        <button id="two" type="submit" value=2 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">2</span>
                         </button>
-                        <button id="two" type="submit" value=2 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
-                            <div class="h4">2</div>
+                        <button id="three" type="submit" value=3 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">3</span>
                         </button>
-                        <button id="three" type="submit" value=3 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
-                            <div class="h4">3</div>
+                        <button id="four" type="submit" value=4 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">4</span>
                         </button>
-                    </div>
-                    <div class="row">
-                        <button id="four" type="submit" value=4 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
-                            <div class="h4">4</div>
+                        <button id="five" type="submit" value=5 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">5</span>
                         </button>
-                        <button id="five" type="submit" value=5 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
-                            <div class="h4">5</div>
+                        <button id="erase" type="submit" value=0 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5"><i class="fas fa-eraser"></i></span>
                         </button>
-                        <button id="six" type="submit" value=6 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
-                            <div class="h4">6</div>
+                        <button id="clear" type="reset" class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5"><i class="fas fa-trash-alt"></i></span>
                         </button>
-                    </div>
-                    <div class="row">
-                        <button id="seven" type="submit" value=7 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
-                            <div class="h4">7</div>
+                        <button id="six" type="submit" value=6 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">6</span>
                         </button>
-                        <button id="eight" type="submit" value=8 class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
-                            <div class="h4">8</div>
+                        <button id="seven" type="submit" value=7 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">7</span>
                         </button>
-                        <button id="nine" type="submit" value=9 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
-                            <div class="h4">9</div>
+                        <button id="eight" type="submit" value=8 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">8</span>
                         </button>
-                    </div>
-                    <div class="row">
-                        <button id="clear" type="reset" class="btn btn-outline-secondary col rounded-0 border-bottom-0 border-right-0">
-                            <div class="h3"><i class="fas fa-trash-alt"></i></div>
-                            <div>CLEAR</div>
+                        <button id="nine" type="submit" value=9 class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">9</span>
                         </button>
-                        <button id="erase" type="submit" value=0 class="btn btn-outline-secondary col rounded-0 border-bottom-0">
-                            <div class="h3"><i class="fas fa-eraser"></i></div>
-                            <div>ERASE</div>
+                        <button id="" type="" class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5">x</span>
                         </button>
-                    </div>
-                    <div class="row">
-                        <button id="validate" type="submit" class="btn btn-outline-secondary col rounded-0 border-right-0">
-                            <div class="h3"><i class="fas fa-check"></i></div>
-                            <div>VALIDATE</div>
+                        <button id="validate" type="submit" class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5"><i class="fas fa-check"></i></span>
                         </button>
-                        <button id="solution" type="submit" class="btn btn-outline-secondary col rounded-0">
-                            <div class="h3"><i class="far fa-lightbulb"></i></div>
-                            <div>SOLVE</div>
+                        <button id="solution" type="submit" class="btn btn-outline-secondary rounded-circle">
+                            <span class="h5"><i class="far fa-lightbulb"></i></span>
                         </button>
-                    </div>
+                        <div id="newgame">
+                            <button class="btn btn-info rounded-0 mt-3" onclick="newGame()">
+                                <span class="h6">New Game</span>
+                            </button>
+                        </div>
+                    </span>
                 </div>
             </div>
-            <div class="col my-5">
+            <div class="col mb-5 mx-1">
                 <!-- NUMBER API -->
-                <div class="card mt-3">
-                    <div class="card-body px-4 py-5">
+                <div class="card mb-3">
+                    <div class="card-body px-3 pt-4 pb-5">
                         <h4 class="card-title text-info mb-4">Fun Facts about Numbers</h4>
                         <h5 id='fact' class="card-subtitle text-secondary">
                         </h4>
