@@ -80,7 +80,7 @@ button {
 }
 
 
-@media only screen and (max-width: 414px) {
+@media only screen and (max-width: 540px) {
     #board {
         width: 92vw;
         height: 92vw;
@@ -90,6 +90,9 @@ button {
         width: 9.2vw;
         height: 9.2vw;
         font-size: 22px;
+    }
+    .number-box {
+        padding-top: 2px;
     }
     .note-box-cell {
         width: 3vw;
@@ -111,6 +114,7 @@ button {
         height: 11vw;
         font-weight: bolder;
     }
+
     #newgame {
         width: 80vw;
         text-align: center;

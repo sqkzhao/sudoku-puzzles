@@ -83,6 +83,9 @@ function renderBoard(){
 }
 
 function renderFact(number){
+    if(number === undefined) {
+        number = "random";
+    }
     $.get("http://numbersapi.com/" + number, function(data){
         fact = data;
         const index = fact.indexOf('is');
@@ -343,6 +346,12 @@ function highlight(value){
     } 
 }
 
+function clearNotes() {
+    for(var i = 0; i < 9; i++) {
+        notes[i] = [[],[],[],[],[],[],[],[],[]];
+    }
+}
+
 
 
 // BUTTONS & INPUTS
@@ -414,6 +423,7 @@ $(document).on('click', '#clear', function(){
 // SOLUTION
 $(document).on('click', '#solution', function(){
     if(this.id == 'solution'){
+        clearNotes();
         reRenderBoard(solved_sudoku);
         validateInput(original_board, board, solved_sudoku);
         for(var row = 0; row < 9; row++){
@@ -440,8 +450,10 @@ $(document).on('click', '#note-button', function(){
     if(pencil_on){
         // change pencil status
         document.getElementById('pencil-status').innerHTML = `<i class="far fa-times-circle"></i>`;
+        // document.getElementById('pencil-icon-status').innerHTML = `<i class="far fa-edit"></i>`;
     } else {
         document.getElementById('pencil-status').innerHTML = `<i class="far fa-check-circle"></i>`;
+        // document.getElementById('pencil-icon-status').innerHTML = `<i class="fas fa-edit"></i>`;
     }
     pencil_on = !pencil_on;
 })
